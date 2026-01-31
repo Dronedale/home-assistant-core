@@ -67,5 +67,9 @@
         ]
       }
     }
-  }
+  },
+  "mounts": [
+    "source=/Users/danielschroder/vscode/HomeAssistant/Integrations/ha-bambulab/custom_components/bambu_lab,target=/workspaces/home-assistant-core/config/custom_components/bambu_lab,type=bind,consistency=cached"
+    //,"source=/Users/danielschroder/vscode/HomeAssistant/Cards/hass-gcode-preview-card,target=/workspaces/home-assistant-core/config/www/hass-gcode-preview-card,type=bind,consistency=cached"
+  ]
 }
