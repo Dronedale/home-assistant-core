@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, call
 from chip.clusters import Objects as clusters
 from matter_server.client.models.node import MatterNode
 import pytest
-from syrupy import SnapshotAssertion
+from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.light import ColorMode
 from homeassistant.const import Platform
@@ -131,6 +131,15 @@ async def test_dimmable_light(
 ) -> None:
     """Test a dimmable light."""
 
+    # Test for currentLevel is None
+    set_node_attribute(matter_node, 1, 8, 0, None)
+    await trigger_subscription_callback(hass, matter_client)
+
+    state = hass.states.get(entity_id)
+    assert state is not None
+    assert state.state == "on"
+    assert state.attributes["brightness"] is None
+
     # Test that the light brightness is 50 (out of 254)
     set_node_attribute(matter_node, 1, 8, 0, 50)
     await trigger_subscription_callback(hass, matter_client)
@@ -205,7 +214,7 @@ async def test_color_temperature_light(
     assert state is not None
     assert state.state == "on"
     assert state.attributes["color_mode"] == ColorMode.COLOR_TEMP
-    assert state.attributes["color_temp"] == 3003
+    assert state.attributes["color_temp_kelvin"] == 333
 
     # Change color temperature
     await hass.services.async_call(
@@ -213,7 +222,7 @@ async def test_color_temperature_light(
         "turn_on",
         {
             "entity_id": entity_id,
-            "color_temp": 300,
+            "color_temp_kelvin": 3333,
         },
         blocking=True,
     )
@@ -244,7 +253,7 @@ async def test_color_temperature_light(
     await hass.services.async_call(
         "light",
         "turn_on",
-        {"entity_id": entity_id, "color_temp": 300, "transition": 4.0},
+        {"entity_id": entity_id, "color_temp_kelvin": 3333, "transition": 4.0},
         blocking=True,
     )
 

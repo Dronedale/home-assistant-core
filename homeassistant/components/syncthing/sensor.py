@@ -83,6 +83,7 @@ class FolderSensor(SensorEntity):
         "needTotalItems": "need_total_items",
         "pullErrors": "pull_errors",
         "state": "state",
+        "stateChanged": "state_changed",
     }
 
     def __init__(self, syncthing, server_id, folder_id, folder_label, version):
@@ -111,7 +112,7 @@ class FolderSensor(SensorEntity):
         return self._state["state"]
 
     @property
-    def available(self):
+    def available(self) -> bool:
         """Could the device be accessed during the last update call."""
         return self._state is not None
 
